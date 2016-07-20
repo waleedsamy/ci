@@ -1,0 +1,24 @@
+jenkinsData:
+  container_name: data-container-jenkins
+  image: jenkins
+  volumes:
+    - "./data/jenkins_home:/var/jenkins_home"
+  entrypoint: /bin/sh
+jenkins:
+  container_name: jenkins
+  image: jenkins
+  ports:
+    - "8080:8080"
+    - "50000:50000"
+  volumes_from:
+    - jenkinsData
+  volumes:
+    - "./ssh:/var/jenkins_home/.ssh"
+  links:
+    - staging:staging
+
+staging:
+  container_name: staging-server
+  build: ./staging-server
+  expose:
+    - "22"
